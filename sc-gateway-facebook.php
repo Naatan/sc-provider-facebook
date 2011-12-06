@@ -98,7 +98,6 @@ class SC_Gateway_Facebook
 			});
 		}));
 		</script>
-		
 		<?php
 	}
 	
@@ -156,9 +155,9 @@ class SC_Gateway_Facebook
 		return (object) array(
 			'provider_identity' => $fb_json->id,
 			'email'             => $fb_json->email,
-			'first_name'         => $fb_json->first_name,
+			'first_name'        => $fb_json->first_name,
 			'last_name'         => $fb_json->last_name,
-			'profile_url'        => $fb_json->link,
+			'profile_url'       => $fb_json->link,
 			'name'              => $fb_json->first_name . ' ' . $fb_json->last_name,
 			'user_login'        => strtolower( $fb_json->first_name.$fb_json->last_name )
 		);
