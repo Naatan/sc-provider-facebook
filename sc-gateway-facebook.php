@@ -19,11 +19,11 @@ class SC_Gateway_Facebook
 	
 	static function init()
 	{
-		add_action('admin_init', 						array('SC_Gateway_Facebook', 'register_settings') );
-		add_action('social_connect_button_list',		array('SC_Gateway_Facebook', 'render_button'));
+		add_action('admin_init',                        array('SC_Gateway_Facebook', 'register_settings') );
+		add_action('social_connect_button_list',        array('SC_Gateway_Facebook', 'render_button'));
 		
 		add_filter('social_connect_enable_options_page', create_function('$bool','return true;'));
-		add_action('social_connect_options',			array('SC_Gateway_Facebook', 'render_options') );
+		add_action('social_connect_options',            array('SC_Gateway_Facebook', 'render_options') );
 	}
 	
 	static function call()
@@ -105,9 +105,9 @@ class SC_Gateway_Facebook
 	static function connect()
 	{
 		
-		$client_id 		= get_option('social_connect_facebook_api_key');
-		$secret_key 	= get_option('social_connect_facebook_secret_key');
-		$redirect_uri 	= urlencode(SOCIAL_CONNECT_PLUGIN_URL . '/call.php?gateway=facebook&call=callback');
+		$client_id      = get_option('social_connect_facebook_api_key');
+		$secret_key     = get_option('social_connect_facebook_secret_key');
+		$redirect_uri   = urlencode(SOCIAL_CONNECT_PLUGIN_URL . '/call.php?gateway=facebook&call=callback');
 		
 		wp_redirect('https://graph.facebook.com/oauth/authorize?client_id=' . $client_id . '&redirect_uri=' . $redirect_uri . '&scope=email');
 		
@@ -115,9 +115,9 @@ class SC_Gateway_Facebook
 	
 	static function callback()
 	{
-		$client_id 	= get_option('social_connect_facebook_api_key');
-		$secret_key = get_option('social_connect_facebook_secret_key');
-		$code 		= $_GET['code'];
+		$client_id      = get_option('social_connect_facebook_api_key');
+		$secret_key     = get_option('social_connect_facebook_secret_key');
+		$code           = $_GET['code'];
 		
 		parse_str(SC_Utils::curl_get_contents(
 			"https://graph.facebook.com/oauth/access_token?" .
@@ -133,11 +133,11 @@ class SC_Gateway_Facebook
 		<head>
 		<script>
 		function init() {
-		  window.opener.wp_social_connect({'action' : 'social_connect', 'social_connect_provider' : 'facebook',
-			'social_connect_signature' : '<?php echo $signature ?>',
-			'social_connect_access_token' : '<?php echo $access_token ?>'});
-			
-		  window.close();
+			window.opener.wp_social_connect({
+				'action' : 'social_connect', 'social_connect_provider' : 'facebook',
+				'social_connect_signature' : '<?php echo $signature ?>',
+				'social_connect_access_token' : '<?php echo $access_token ?>'});
+			window.close();
 		}
 		</script>
 		</head>
@@ -155,12 +155,12 @@ class SC_Gateway_Facebook
 		
 		return (object) array(
 			'provider_identity' => $fb_json->id,
-			'email' 			=> $fb_json->email,
-			'first_name' 		=> $fb_json->first_name,
-			'last_name' 		=> $fb_json->last_name,
-			'profile_url'		=> $fb_json->link,
-			'name' 				=> $fb_json->first_name . ' ' . $fb_json->last_name,
-			'user_login' 		=> strtolower( $fb_json->first_name.$fb_json->last_name )
+			'email'             => $fb_json->email,
+			'first_name'         => $fb_json->first_name,
+			'last_name'         => $fb_json->last_name,
+			'profile_url'        => $fb_json->link,
+			'name'              => $fb_json->first_name . ' ' . $fb_json->last_name,
+			'user_login'        => strtolower( $fb_json->first_name.$fb_json->last_name )
 		);
 	}
 	
