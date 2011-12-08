@@ -12,11 +12,17 @@ License: GPL2
 
 require_once dirname(__FILE__) . '/sdk.php';
 
+/**
+ * Social Connect Facebook provider
+ */
 class SC_Provider_Facebook 
 {
 	
-	protected static $calls = array('connect','callback');
-	
+	/**
+	 * Init, static class constructor
+	 * 
+	 * @returns	void 
+	 */
 	static function init()
 	{
 		add_action('admin_init',                        array('SC_Provider_Facebook', 'register_settings') );
@@ -26,6 +32,11 @@ class SC_Provider_Facebook
 		add_action('social_connect_options',            array('SC_Provider_Facebook', 'render_options') );
 	}
 	
+	/**
+	 * When a callback is made, it will be tunneled through this method
+	 * 
+	 * @returns	void							
+	 */
 	static function call()
 	{
 		if ( !isset($_GET['call']) OR !in_array($_GET['call'], array('connect','callback')))
@@ -36,12 +47,22 @@ class SC_Provider_Facebook
 		call_user_func(array('SC_Provider_Facebook', $_GET['call']));
 	}
 	
+	/**
+	 * Register settings used by this plugin
+	 *  
+	 * @returns	void							
+	 */
 	static function register_settings()
 	{
 		register_setting( 'social-connect-settings-group', 'social_connect_facebook_api_key' );
 		register_setting( 'social-connect-settings-group', 'social_connect_facebook_secret_key' );
 	}
 	
+	/**
+	 * Render provider options, embedded on the SC options page
+	 * 
+	 * @returns	void							
+	 */
 	static function render_options()
 	{
 		?>
@@ -68,6 +89,11 @@ class SC_Provider_Facebook
 		<?php
 	}
 	
+	/**
+	 * Render connect button and related javascript
+	 * 
+	 * @returns	void							
+	 */
 	static function render_button()
 	{
 		$image_url = plugins_url() . '/' . basename( dirname( __FILE__ )) . '/button.png';
@@ -101,6 +127,11 @@ class SC_Provider_Facebook
 		<?php
 	}
 	
+	/**
+	 * Initiate authentication, redirects to provider auth page
+	 * 
+	 * @returns	void							
+	 */
 	static function connect()
 	{
 		
@@ -112,6 +143,11 @@ class SC_Provider_Facebook
 		
 	}
 	
+	/**
+	 * Provider authentication callback, called when the provider has done it's part
+	 * 
+	 * @returns	void							
+	 */
 	static function callback()
 	{
 		$client_id      = get_option('social_connect_facebook_api_key');
@@ -146,6 +182,11 @@ class SC_Provider_Facebook
 		<?php
 	}
 	
+	/**
+	 * Process the login, validates the provider's data and returns required information
+	 * 
+	 * @returns	object							
+	 */
 	static function process_login()
 	{
 		SC_Utils::verify_signature( $_REQUEST[ 'social_connect_access_token' ], $_REQUEST[ 'social_connect_signature' ], $redirect_to );
