@@ -1,7 +1,7 @@
 <?php
 
 /*
-Plugin Name: Social Connect - Facebook Gateway
+Plugin Name: Social Connect - Facebook Provider
 Plugin URI: http://wordpress.org/extend/plugins/social-connect/
 Description: Allows you to login / register with Facebook - REQUIRES Social Connect plugin
 Version: 0.10
@@ -12,18 +12,18 @@ License: GPL2
 
 require_once dirname(__FILE__) . '/sdk.php';
 
-class SC_Gateway_Facebook 
+class SC_Provider_Facebook 
 {
 	
 	protected static $calls = array('connect','callback');
 	
 	static function init()
 	{
-		add_action('admin_init',                        array('SC_Gateway_Facebook', 'register_settings') );
-		add_action('social_connect_button_list',        array('SC_Gateway_Facebook', 'render_button'));
+		add_action('admin_init',                        array('SC_Provider_Facebook', 'register_settings') );
+		add_action('social_connect_button_list',        array('SC_Provider_Facebook', 'render_button'));
 		
 		add_filter('social_connect_enable_options_page', create_function('$bool','return true;'));
-		add_action('social_connect_options',            array('SC_Gateway_Facebook', 'render_options') );
+		add_action('social_connect_options',            array('SC_Provider_Facebook', 'render_options') );
 	}
 	
 	static function call()
@@ -33,7 +33,7 @@ class SC_Gateway_Facebook
 			return;
 		}
 		
-		call_user_func(array('SC_Gateway_Facebook', $_GET['call']));
+		call_user_func(array('SC_Provider_Facebook', $_GET['call']));
 	}
 	
 	static function register_settings()
@@ -75,7 +75,7 @@ class SC_Gateway_Facebook
 		<a href="javascript:void(0);" title="Facebook" class="social_connect_login_facebook"><img alt="Facebook" src="<?php echo $image_url ?>" /></a>
 		<div id="social_connect_facebook_auth" style="display: none;">
 			<input type="hidden" name="client_id" value="<?php echo get_option( 'social_connect_facebook_api_key' ); ?>" />
-			<input type="hidden" name="redirect_uri" value="<?php echo urlencode( SOCIAL_CONNECT_PLUGIN_URL . '/call.php?call=connect&gateway=facebook' ); ?>" />
+			<input type="hidden" name="redirect_uri" value="<?php echo urlencode( SOCIAL_CONNECT_PLUGIN_URL . '/call.php?call=connect&provider=facebook' ); ?>" />
 		</div>
 		
 		<script type="text/javascript">
@@ -106,7 +106,7 @@ class SC_Gateway_Facebook
 		
 		$client_id      = get_option('social_connect_facebook_api_key');
 		$secret_key     = get_option('social_connect_facebook_secret_key');
-		$redirect_uri   = urlencode(SOCIAL_CONNECT_PLUGIN_URL . '/call.php?gateway=facebook&call=callback');
+		$redirect_uri   = urlencode(SOCIAL_CONNECT_PLUGIN_URL . '/call.php?provider=facebook&call=callback');
 		
 		wp_redirect('https://graph.facebook.com/oauth/authorize?client_id=' . $client_id . '&redirect_uri=' . $redirect_uri . '&scope=email');
 		
@@ -120,7 +120,7 @@ class SC_Gateway_Facebook
 		
 		parse_str(SC_Utils::curl_get_contents(
 			"https://graph.facebook.com/oauth/access_token?" .
-			'client_id=' . $client_id . '&redirect_uri=' . urlencode(SOCIAL_CONNECT_PLUGIN_URL . '/call.php?gateway=facebook&call=callback') .
+			'client_id=' . $client_id . '&redirect_uri=' . urlencode(SOCIAL_CONNECT_PLUGIN_URL . '/call.php?provider=facebook&call=callback') .
 			'&client_secret=' .  $secret_key .
 			'&code=' . urlencode($code)
 		));
@@ -165,4 +165,4 @@ class SC_Gateway_Facebook
 	
 }
 
-SC_Gateway_Facebook::init();
+SC_Provider_Facebook::init();
